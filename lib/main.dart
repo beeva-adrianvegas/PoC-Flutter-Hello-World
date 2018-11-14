@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'strings.dart';
 
 void main() => runApp(new MyApp());
 
@@ -10,10 +11,10 @@ class MyApp extends StatelessWidget {
       title: 'GHFlutter',
       home: new Scaffold(
         appBar: new AppBar(
-          title: new Text('Flutter PoC!'),
+          title: new Text(Strings.appTitle),
         ),
         body: new Center(
-          child: new Text('Hello World!'),
+          child: new Text(Strings.appMidText),
         ),
       ),
     );
