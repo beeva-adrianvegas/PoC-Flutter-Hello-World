@@ -30,12 +30,22 @@ class PoCFlutterState extends State<PoCFlutter> {
   final _biggerFont = const TextStyle(fontSize: 18.0);
 
   _loadData() async {
-    //Los miembros de nuestra organizacion son privados asi que mostraremos los de flutter
+    //BBVANext members are private so i will show flutter members
     String dataURL = "https://api.github.com/orgs/flutter/members";
     http.Response response = await http.get(dataURL);
     setState(() {
-      _members = json.decode(response.body);
+      try{
+        _members = json.decode(response.body);
+      }catch(e){
+        print("Error on json.decode $e");
+      }
     });
+  }
+
+  Widget _buildRow(int i) {
+    return new ListTile(
+        title: new Text("${_members[i]["login"]}", style: _biggerFont)
+    );
   }
 
   @override
@@ -50,7 +60,12 @@ class PoCFlutterState extends State<PoCFlutter> {
       appBar: new AppBar(
         title: new Text(Strings.appTitle),
       ),
-      body: new Text(Strings.appMidText),
+      body: new ListView.builder(//Similar to RecyclerView on Android and a UITableView on iOS
+          padding: const EdgeInsets.all(16.0),
+          itemCount: _members.length,
+          itemBuilder: (BuildContext context, int position) {
+            return _buildRow(position);
+          }),
     );
   }
 }
