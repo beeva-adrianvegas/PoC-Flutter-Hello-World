@@ -37,7 +37,8 @@ class PoCFlutterState extends State<PoCFlutter> {
       final membersJSON = json.decode(response.body);
 
       for (var memberJSON in membersJSON) {
-        final member = new Member(memberJSON["login"]);
+        final member = new Member(memberJSON["login"],
+            memberJSON["avatar_url"]);
         _members.add(member);
       }
     });
@@ -48,7 +49,11 @@ class PoCFlutterState extends State<PoCFlutter> {
     return new Padding(
         padding: const EdgeInsets.all(16.0),
         child: new ListTile(
-            title: new Text("${_members[i].login}", style: _biggerFont)
+          title: new Text("${_members[i].login}", style: _biggerFont),
+          leading: new CircleAvatar(
+              backgroundColor: Colors.green,
+              backgroundImage: new NetworkImage(_members[i].avatarUrl)
+          ),
         )
     );
   }
@@ -78,11 +83,16 @@ class PoCFlutterState extends State<PoCFlutter> {
 
 class Member {
   final String login;
+  final String avatarUrl;
 
-  Member(this.login) {
+  Member(this.login, this.avatarUrl) {
     if (login == null) {
       throw new ArgumentError("login of Member cannot be null. "
           "Received: '$login'");
+    }
+    if (avatarUrl == null) {
+      throw new ArgumentError("avatarUrl of Member cannot be null. "
+          "Received: '$avatarUrl'");
     }
   }
 }
