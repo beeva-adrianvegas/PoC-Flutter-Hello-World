@@ -26,7 +26,7 @@ class PoCFlutter extends StatefulWidget {
 class PoCFlutterState extends State<PoCFlutter> {
 
   //underscore makes the members of the class private
-  var _members = [];
+  var _members = <Member>[];
   final _biggerFont = const TextStyle(fontSize: 18.0);
 
   _loadData() async {
@@ -34,17 +34,22 @@ class PoCFlutterState extends State<PoCFlutter> {
     String dataURL = "https://api.github.com/orgs/flutter/members";
     http.Response response = await http.get(dataURL);
     setState(() {
-      try{
-        _members = json.decode(response.body);
-      }catch(e){
-        print("Error on json.decode $e");
+      final membersJSON = json.decode(response.body);
+
+      for (var memberJSON in membersJSON) {
+        final member = new Member(memberJSON["login"]);
+        _members.add(member);
       }
     });
   }
 
+
   Widget _buildRow(int i) {
-    return new ListTile(
-        title: new Text("${_members[i]["login"]}", style: _biggerFont)
+    return new Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: new ListTile(
+            title: new Text("${_members[i].login}", style: _biggerFont)
+        )
     );
   }
 
@@ -60,12 +65,24 @@ class PoCFlutterState extends State<PoCFlutter> {
       appBar: new AppBar(
         title: new Text(Strings.appTitle),
       ),
-      body: new ListView.builder(//Similar to RecyclerView on Android and a UITableView on iOS
-          padding: const EdgeInsets.all(16.0),
-          itemCount: _members.length,
+      body: new ListView.builder(
+          itemCount: _members.length * 2,
           itemBuilder: (BuildContext context, int position) {
-            return _buildRow(position);
+            if (position.isOdd) return new Divider();
+            final index = position ~/ 2;
+            return _buildRow(index);
           }),
     );
+  }
+}
+
+class Member {
+  final String login;
+
+  Member(this.login) {
+    if (login == null) {
+      throw new ArgumentError("login of Member cannot be null. "
+          "Received: '$login'");
+    }
   }
 }
