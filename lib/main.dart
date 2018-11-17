@@ -11,6 +11,7 @@ class PocFlutterApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return new MaterialApp(
       title: Strings.appTitle,
+      theme: new ThemeData(primaryColor: Colors.lightBlueAccent),
       home: new PoCFlutter(),
     );
   }
